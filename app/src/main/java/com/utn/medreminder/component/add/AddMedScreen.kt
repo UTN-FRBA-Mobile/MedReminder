@@ -1,6 +1,5 @@
 package com.utn.medreminder.component.add
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,9 +10,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.utn.medreminder.component.main.MedItem
+import com.utn.medreminder.model.MedItem
+import com.utn.medreminder.utils.PreferencesManager
+import com.utn.medreminder.utils.ScreenConst
 import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,6 +25,7 @@ fun AddMedScreen (navController: NavController,onSave: (MedItem) -> Unit) {
     var dosage by remember { mutableStateOf("") }
     var frequency by remember { mutableStateOf("") }
     var startTime by remember { mutableStateOf(LocalTime.now().toString()) }
+    val preferencesManager = PreferencesManager(LocalContext.current)
 
     Scaffold(
         topBar = {
@@ -64,7 +67,9 @@ fun AddMedScreen (navController: NavController,onSave: (MedItem) -> Unit) {
                     val medication = MedItem(medicamento = medicationName,
                         dosis = dosage,
                         frecuencia=frequency)
-                    onSave(medication) // Manejar el guardado
+                    //onSave(medication) // Manejar el guardado
+                    preferencesManager.addMedication(medication);
+                    navController.navigate(ScreenConst.ListScreenName)
                 }
             ) {
                 Text("Guardar Medicamento")

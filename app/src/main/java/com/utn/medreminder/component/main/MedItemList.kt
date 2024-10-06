@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.utn.medreminder.R
+import com.utn.medreminder.model.MedItem
 
 @Composable
 

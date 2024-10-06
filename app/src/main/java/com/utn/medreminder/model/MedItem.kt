@@ -1,4 +1,4 @@
-package com.utn.medreminder.component.main
+package com.utn.medreminder.model
 
 data class MedItem(
     val medicamento: String,
