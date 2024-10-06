@@ -7,12 +7,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.utn.medreminder.component.add.AddMedScreen
 import com.utn.medreminder.component.main.MedItem
 import com.utn.medreminder.component.main.MedItemList
 import com.utn.medreminder.ui.theme.MyApplicationTheme
+import com.utn.medreminder.utils.ScreenConst
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +27,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyApplicationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
+                    MedRemindApp(
                         list = emptyList(),
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
@@ -34,13 +40,20 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun Greeting(list: List<MedItem>,name:String ,  modifier: Modifier = Modifier) {
+fun MedRemindApp(list: List<MedItem>, name:String, modifier: Modifier = Modifier) {
+    val navController = rememberNavController();
+//    MedItemList(list)
+    NavHost(navController = navController, startDestination = ScreenConst.ListScreenName ){
+        composable(route = ScreenConst.ListScreenName) {
+            MedItemList(list,navController);
+        }
+        composable(route =ScreenConst.AddItemScreenName){
+            AddMedScreen(navController = navController) {
+                
+            }
+        }
+    }
 
-//    Text(
-//        text = "Hello $name!",
-//        modifier = modifier
-//    )
-    MedItemList(list)
 }
 
 @Preview(showBackground = true)
@@ -56,6 +69,6 @@ fun GreetingPreview() {
             )
         }
 
-        Greeting(items,"hello world!!!")
+        MedRemindApp(items,"hello world!!!")
     }
 }
