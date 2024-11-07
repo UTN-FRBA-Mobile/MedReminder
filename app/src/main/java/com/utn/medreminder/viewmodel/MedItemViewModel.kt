@@ -16,8 +16,8 @@ class MedItemViewModel:ViewModel() {
         viewModelScope.launch {
             try {
                 val items = RetrofitInstance.api.getMedItems()
-                medItems.clear()
-                medItems.addAll(items)
+                medItems.clear() // Limpiar la lista antes de agregar los nuevos elementos
+                medItems.addAll(items) // Añadir los items nuevos
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -28,7 +28,7 @@ class MedItemViewModel:ViewModel() {
         viewModelScope.launch {
             try {
                 val newItem = RetrofitInstance.api.createMedItem(medItem)
-                medItems.add(newItem)
+                medItems.add(newItem) // Agregar el nuevo item a la lista
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -38,8 +38,12 @@ class MedItemViewModel:ViewModel() {
     fun deleteMedItem(id: Long) {
         viewModelScope.launch {
             try {
-                RetrofitInstance.api.deleteMedItem(id)
-                medItems.removeAll { it.id == id }
+                val response = RetrofitInstance.api.deleteMedItem(id)
+                if(response.isSuccessful){
+                    medItems.removeAll { it.id == id } // Eliminar el item de la lista
+                }else{
+                    println("Error al eliminar el item: ${response.code()}")
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }

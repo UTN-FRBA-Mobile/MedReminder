@@ -1,5 +1,6 @@
 package com.utn.medreminder.api
 import com.utn.medreminder.model.MedItem
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
@@ -18,7 +19,7 @@ interface MedItemApiService {
     suspend fun updateMedItem(@Path("id") id: Long, @Body medItem: MedItem): MedItem
 
     @DELETE("api/meditems/{id}")
-    suspend fun deleteMedItem(@Path("id") id: Long)
+    suspend fun deleteMedItem(@Path("id") id: Long): Response<Unit>
 }
 
 object RetrofitInstance {

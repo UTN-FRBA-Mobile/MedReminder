@@ -43,26 +43,9 @@ fun MedRemindApp(modifier: Modifier = Modifier) {
             MainScreen(navController = navController);
         }
         composable(route =ScreenConst.AddItemScreenName){
-            AddMedScreen(navController = navController) {
-                
-            }
+            AddMedScreen(navController = navController)
+
         }
     }
 
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    MyApplicationTheme {
-//
-//        val items = List(100) {
-//            MedItem(
-//                medicamento = "Medicamento #$it",
-//                dosis = "${it + 1} mg",
-//                frecuencia = "${it % 3 + 1} veces al día"
-//            )
-//        }
-//
-//    }
-//}
