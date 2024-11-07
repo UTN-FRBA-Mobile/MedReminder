@@ -1,4 +1,4 @@
-package com.utn.medreminder.component.main
+package com.utn.medreminder.screen.main
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

@@ -1,4 +1,4 @@
-package com.utn.medreminder.component.main
+package com.utn.medreminder.screen.main
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.utn.medreminder.R
+import com.utn.medreminder.api.RetrofitInstance
 import com.utn.medreminder.model.MedItem
 
 @Composable
