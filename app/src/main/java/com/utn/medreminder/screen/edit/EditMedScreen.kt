@@ -1,4 +1,4 @@
-package com.utn.medreminder.screen.add
+package com.utn.medreminder.screen.edit
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -18,17 +18,37 @@ import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = viewModel()) {
+fun EditMedScreen(navController: NavController, viewModel: MedItemViewModel = viewModel(), medItemId: Long) {
+    // Estado de los campos
     var medicationName by remember { mutableStateOf("") }
     var dosage by remember { mutableStateOf("") }
     var frequency by remember { mutableStateOf("") }
-    var startTime by remember { mutableStateOf(LocalTime.now().toString()) }
+    var startTime by remember { mutableStateOf("") }
+
+    // Contexto y scope para coroutine
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    println("llamada")
+
+    // Cargar el medicamento desde la API
+    LaunchedEffect(medItemId) {
+        try {
+            // Recupera el medicamento para la edición
+            val medItem = viewModel.getMedItem(medItemId)
+            medicationName = medItem.medicamento
+            dosage = medItem.dosis
+            frequency = medItem.frecuencia
+            startTime = medItem.horaInicio
+            println("medicationName")
+            println(medicationName)
+        } catch (e: Exception) {
+            Toast.makeText(context, "Error al cargar el medicamento", Toast.LENGTH_LONG).show()
+        }
+    }
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Agregar Medicamento") })
+            TopAppBar(title = { Text("Editar Medicamento") })
         }
     ) { innerPadding ->
         Column(
@@ -80,16 +100,17 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
                     } else {
                         scope.launch {
                             try {
-                                // Crea el objeto MedItem
-                                val medItem = MedItem(
+                                // Crea el objeto MedItem con los nuevos valores
+                                val updatedMedItem = MedItem(
+                                    id = medItemId, // Usar el mismo ID para la edición
                                     medicamento = medicationName,
                                     dosis = dosage,
                                     frecuencia = frequency,
                                     horaInicio = startTime
                                 )
 
-                                // Llama a la API para guardar el medicamento
-                                viewModel.addMedItem(medItem)
+                                // Llama a la API para actualizar el medicamento
+                                viewModel.updateMedItem(updatedMedItem)
 
                                 // Navega de regreso a la lista
                                 navController.navigate(ScreenConst.ListScreenName)
@@ -97,7 +118,7 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
                                 // Muestra un mensaje de éxito
                                 Toast.makeText(
                                     context,
-                                    "Medicamento guardado exitosamente",
+                                    "Medicamento actualizado exitosamente",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } catch (e: Exception) {
@@ -113,7 +134,7 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Guardar Medicamento")
+                Text("Guardar Cambios")
             }
         }
     }

@@ -16,7 +16,7 @@ interface MedItemApiService {
     suspend fun getMedItem(@Path("id") id: Long): MedItem
 
     @PUT("api/meditems/{id}")
-    suspend fun updateMedItem(@Path("id") id: Long, @Body medItem: MedItem): MedItem
+    suspend fun updateMedItem(@Path("id") id: Long, @Body medItem: MedItem): Response<Unit>
 
     @DELETE("api/meditems/{id}")
     suspend fun deleteMedItem(@Path("id") id: Long): Response<Unit>

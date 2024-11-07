@@ -49,4 +49,35 @@ class MedItemViewModel:ViewModel() {
             }
         }
     }
+
+    fun updateMedItem(medItem: MedItem) {
+        viewModelScope.launch {
+            try {
+                val response = medItem.id?.let { RetrofitInstance.api.updateMedItem(it, medItem) }
+                if (response != null) {
+                    if (response.isSuccessful) {
+                        fetchMedItems()
+                    } else {
+                        println("Error al actualizar el medicamento: ${response.code()}")
+                    }
+                } else {
+                    println("Error al actualizar el medicamento")
+                }
+            } catch (e: Exception) {
+                println("Error de red: ${e.message}")
+            }
+        }
+    }
+
+    suspend fun getMedItem(id: Long): MedItem {
+        var medItem: MedItem = MedItem()
+        viewModelScope.launch {
+            try {
+                medItem = RetrofitInstance.api.getMedItem(id)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        return medItem
+    }
 }

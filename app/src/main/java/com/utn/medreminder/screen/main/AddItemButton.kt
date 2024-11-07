@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,30 +22,27 @@ import com.utn.medreminder.utils.ScreenConst
 
 @Composable
 fun AddItemButton(navController: NavController) {
-    Box(modifier = Modifier.fillMaxSize()) {//Porque Necesito un BOX si el MainScreen lo tiene¿?
+    Box(modifier = Modifier.fillMaxSize()) { // El Box asegura que el FAB se sitúe en la parte inferior derecha
         ExtendedFloatingActionButton(
             onClick = { navController.navigate(ScreenConst.AddItemScreenName) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(horizontal = 0.dp, vertical = 0.dp)
-                .background(color = Color.Yellow),
+                .padding(16.dp), // Añadimos un padding más espacioso
             icon = {
                 Icon(
-                    painterResource(id = R.drawable.add_icon),
-                    contentDescription = "example",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .padding(0.dp)
+                    painter = painterResource(id = R.drawable.add_icon),
+                    contentDescription = "Agregar medicamento",
+                    modifier = Modifier.size(24.dp)
                 )
             },
             text = {
                 Text(
                     text = "Agregar Medicamento",
-                    modifier = Modifier
-                        .padding(0.dp)
-                        .background(color = Color.Blue)
+                    modifier = Modifier.padding(start = 8.dp) // Un pequeño padding para separar el texto del ícono
                 )
             },
+            containerColor = MaterialTheme.colorScheme.primary, // Usa el color principal del tema
+            contentColor = Color.White // Asegura que el ícono y texto sean blancos para buena visibilidad
         )
     }
 }

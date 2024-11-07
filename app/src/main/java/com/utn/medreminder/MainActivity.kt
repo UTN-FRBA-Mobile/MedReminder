@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.utn.medreminder.screen.add.AddMedScreen
+import com.utn.medreminder.screen.edit.EditMedScreen
 import com.utn.medreminder.screen.main.MainScreen
 import com.utn.medreminder.ui.theme.MyApplicationTheme
 import com.utn.medreminder.utils.ScreenConst
@@ -44,7 +45,10 @@ fun MedRemindApp(modifier: Modifier = Modifier) {
         }
         composable(route =ScreenConst.AddItemScreenName){
             AddMedScreen(navController = navController)
-
+        }
+        composable(route =ScreenConst.EditItemScreenName) { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: 0
+            EditMedScreen(navController=navController, medItemId=id)
         }
     }
 

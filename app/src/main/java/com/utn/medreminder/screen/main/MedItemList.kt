@@ -1,4 +1,5 @@
 package com.utn.medreminder.screen.main
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,7 +13,7 @@ import com.utn.medreminder.model.MedItem
 
 @Composable
 
-fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit) {
+fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit, onEdit: (Long) -> Unit) {
 
 
     LazyColumn(
@@ -67,15 +68,30 @@ fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit) {
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    Button(
-                        onClick = { item.id?.let { onDelete(it) } },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(
-                            text = "Eliminar",
-                            color = MaterialTheme.colorScheme.onError,
-                            style = MaterialTheme.typography.labelLarge
-                        )
+                        Button(
+                            onClick = { item.id?.let { onDelete(it) } },
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                        ) {
+                            Text(
+                                text = "Eliminar",
+                                color = MaterialTheme.colorScheme.onError,
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        }
+
+                        Button(
+                            onClick = { item.id?.let { onEdit(it) } },
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                        ) {
+                            Text(
+                                text = "Editar",
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        }
                     }
                 }
             }

@@ -16,7 +16,11 @@ fun MainScreen(viewModel: MedItemViewModel = viewModel(), navController: NavCont
     }
     val medItems = viewModel.medItems
     Box(modifier = Modifier.fillMaxSize()) {
-        MedItemList(items = medItems, onDelete = { id -> viewModel.deleteMedItem(id) })
+        MedItemList(items = medItems,
+            onDelete = { id -> viewModel.deleteMedItem(id) },
+            onEdit = { id ->
+                navController.navigate("editMedScreen/$id")
+            })
         AddItemButton(navController = navController)
     }
 }
