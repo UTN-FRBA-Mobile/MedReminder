@@ -1,5 +1,6 @@
 package com.utn.medreminder.viewmodel
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,15 +25,16 @@ class MedItemViewModel:ViewModel() {
         }
     }
 
-    fun addMedItem(medItem: MedItem) {
-        viewModelScope.launch {
+    suspend fun addMedItem(medItem: MedItem) {
+        //viewModelScope.launch {
             try {
                 val newItem = RetrofitInstance.api.createMedItem(medItem)
                 medItems.add(newItem) // Agregar el nuevo item a la lista
+                fetchMedItems()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        }
+        //}
     }
 
     fun deleteMedItem(id: Long) {
@@ -41,6 +43,7 @@ class MedItemViewModel:ViewModel() {
                 val response = RetrofitInstance.api.deleteMedItem(id)
                 if(response.isSuccessful){
                     medItems.removeAll { it.id == id } // Eliminar el item de la lista
+                    fetchMedItems()
                 }else{
                     println("Error al eliminar el item: ${response.code()}")
                 }
@@ -71,12 +74,10 @@ class MedItemViewModel:ViewModel() {
 
     suspend fun getMedItem(id: Long): MedItem {
         var medItem: MedItem = MedItem()
-        viewModelScope.launch {
-            try {
-                medItem = RetrofitInstance.api.getMedItem(id)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        try {
+            medItem = RetrofitInstance.api.getMedItem(id)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
         return medItem
     }

@@ -30,7 +30,6 @@ fun EditMedScreen(navController: NavController, viewModel: MedItemViewModel = vi
     val scope = rememberCoroutineScope()
     println("llamada")
 
-    // Cargar el medicamento desde la API
     LaunchedEffect(medItemId) {
         try {
             // Recupera el medicamento para la edición

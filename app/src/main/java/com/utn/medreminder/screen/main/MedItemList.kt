@@ -3,11 +3,22 @@ package com.utn.medreminder.screen.main
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
+
 import com.utn.medreminder.R
 import com.utn.medreminder.model.MedItem
 
@@ -15,6 +26,36 @@ import com.utn.medreminder.model.MedItem
 
 fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit, onEdit: (Long) -> Unit) {
 
+    val openAlertDeleteDialog = remember { mutableStateOf(false) }
+    val id = remember { mutableStateOf<Long>(0) }
+    val name = remember { mutableStateOf<String>("") }
+
+    when {
+        openAlertDeleteDialog.value->{
+                AlertDeleteDialog(
+                    onDismissRequest = {
+                        openAlertDeleteDialog.value = false
+                    },
+                    onConfirmation = {
+                        openAlertDeleteDialog.value=false
+                        onDelete(id.value)
+                        println("Here--> Se confirmo, implementar lo que hay q hacer")
+                    },
+                    dialogTitle = "Eliminar Medicamento",
+
+                    //dialogText = "¿Esta seguro/a que desea eliminar el medicamento ${name.value}?",
+
+                    dialogText = buildAnnotatedString {
+                        append("¿Está seguro/a que desea eliminar el medicamento ")
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(name.value)
+                        }
+                        append("?")
+                    },
+                    icon = Icons.Default.Info
+                )
+        }
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -71,10 +112,13 @@ fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit, onEdit: (Long) -
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Button(
-                            onClick = { item.id?.let { onDelete(it) } },
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-                        ) {
+                        Button(onClick = {
+                                item?.let {
+                                    openAlertDeleteDialog.value = true;
+                                    id.value = it.id ?: 0
+                                    name.value = it.medicamento
+                                }
+                            }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) {
                             Text(
                                 text = "Eliminar",
                                 color = MaterialTheme.colorScheme.onError,

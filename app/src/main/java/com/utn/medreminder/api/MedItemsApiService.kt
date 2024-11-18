@@ -23,7 +23,7 @@ interface MedItemApiService {
 }
 
 object RetrofitInstance {
-    private const val BASE_URL = "http://10.0.2.2:8080/" // Dirección para localhost en Android Emulator
+    private const val BASE_URL = "http://10.0.2.2:8085/" // Dirección para localhost en Android Emulator
 
     val api: MedItemApiService by lazy {
         Retrofit.Builder()
