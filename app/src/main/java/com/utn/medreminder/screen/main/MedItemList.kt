@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
@@ -21,6 +22,7 @@ import androidx.compose.ui.text.withStyle
 
 import com.utn.medreminder.R
 import com.utn.medreminder.model.MedItem
+import com.utn.medreminder.scheduler.AlarmUtils
 
 @Composable
 
@@ -29,6 +31,11 @@ fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit, onEdit: (Long) -
     val openAlertDeleteDialog = remember { mutableStateOf(false) }
     val id = remember { mutableStateOf<Long>(0) }
     val name = remember { mutableStateOf<String>("") }
+
+    val context = LocalContext.current // Si estás en una Activity o usa requireContext() en un Fragment
+    val alarmId = 1 // Identificador único para la alarma
+    val delayInSeconds = 5 // Retraso en segundos
+
 
     when {
         openAlertDeleteDialog.value->{
@@ -112,6 +119,20 @@ fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit, onEdit: (Long) -
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
+
+                        Button(onClick = {
+                            item?.let {
+                                // Cuando se presiona el botón, la alarma se activa
+                                AlarmUtils.setAlarmAfterDelayInSeconds(context, alarmId, delayInSeconds)
+                            }
+                        }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)) {
+                            Text(
+                                text = "Activar Alarma",
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        }
+
                         Button(onClick = {
                                 item?.let {
                                     openAlertDeleteDialog.value = true;
