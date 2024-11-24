@@ -5,5 +5,6 @@ data class MedAlarm (
     val dayOfWeek:Int? = null,
     val alarmHour:Int?=null,
     val alarmMinute:Int?=null,
-    val alarmDateTime:String?=null
+    val alarmDateTime:String?=null,
+    val status:Char?=null
 )

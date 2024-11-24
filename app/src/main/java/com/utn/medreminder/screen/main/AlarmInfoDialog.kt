@@ -11,6 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.utn.medreminder.model.MedAlarm
+import com.utn.medreminder.utils.MedAlarmStatus
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -93,10 +94,31 @@ fun AlarmCard(alarm: MedAlarm) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+//                Text(
+//                    text = "ID: ${alarm.id ?: "Desconocido"}",
+//                    style = MaterialTheme.typography.bodyMedium
+//                )
+
+                Icon(
+                    painter = if (MedAlarmStatus.fromChar(alarm.status) == MedAlarmStatus.FINISHED) {
+                        painterResource(id = com.utn.medreminder.R.drawable.finish_icon)
+                    } else {
+                        painterResource(id = com.utn.medreminder.R.drawable.waiting_icon) // Replace with a different icon if needed
+                    },
+                    contentDescription = "Icono de alarma",
+                    modifier = Modifier.size(24.dp),
+                    tint = if (MedAlarmStatus.fromChar(alarm.status) == MedAlarmStatus.FINISHED){
+                        MaterialTheme.colorScheme.primary
+                    } else{
+                        MaterialTheme.colorScheme.secondary
+                    }
+                )
+
                 Text(
-                    text = "ID: ${alarm.id ?: "Desconocido"}",
+                    text = "${if (MedAlarmStatus.fromChar(alarm.status) == MedAlarmStatus.FINISHED) "Finalizado" else "En Espera"}",
                     style = MaterialTheme.typography.bodyMedium
                 )
+
                 Text(
                     text = "Fecha: $formattedDate",
                     style = MaterialTheme.typography.bodyMedium
