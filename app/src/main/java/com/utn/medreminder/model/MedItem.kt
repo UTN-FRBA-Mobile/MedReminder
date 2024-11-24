@@ -5,6 +5,8 @@ data class MedItem(
     val medicamento: String = "",
     val dosis: String = "",
     val frecuencia: String = "",
-    val horaInicio: String = ""
-
+    val horayFechaDeInicio: String ="",
+    val frecuenciaEnHoras: Int = 5,
+    val cantidad: Int = 4,
+    val alarms: List<MedAlarm>? = null
 )

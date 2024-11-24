@@ -37,7 +37,7 @@ fun EditMedScreen(navController: NavController, viewModel: MedItemViewModel = vi
             medicationName = medItem.medicamento
             dosage = medItem.dosis
             frequency = medItem.frecuencia
-            startTime = medItem.horaInicio
+            startTime = medItem.horayFechaDeInicio
             println("medicationName")
             println(medicationName)
         } catch (e: Exception) {
@@ -105,7 +105,7 @@ fun EditMedScreen(navController: NavController, viewModel: MedItemViewModel = vi
                                     medicamento = medicationName,
                                     dosis = dosage,
                                     frecuencia = frequency,
-                                    horaInicio = startTime
+                                    horayFechaDeInicio = startTime
                                 )
 
                                 // Llama a la API para actualizar el medicamento

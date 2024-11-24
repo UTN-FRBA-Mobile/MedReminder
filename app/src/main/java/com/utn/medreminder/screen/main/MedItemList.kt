@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -14,7 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -36,6 +36,7 @@ fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit, onEdit: (Long) -
     val alarmId = 1 // Identificador único para la alarma
     val delayInSeconds = 5 // Retraso en segundos
 
+    val openInfoDialog = remember { mutableStateOf(false) }
 
     when {
         openAlertDeleteDialog.value->{
@@ -94,11 +95,22 @@ fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit, onEdit: (Long) -
                                 modifier = Modifier.size(24.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
+
+
                             Text(
                                 text = item.medicamento,
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
+
+                            IconButton(onClick = { openInfoDialog.value = true }) {
+                                Icon(
+                                    //  painter = painterResource(id = R.drawable.alarm_icon), // Reemplaza con el recurso de tu ícono de alarma
+                                    imageVector = Icons.Default.Notifications,
+                                    contentDescription = "Ver alarma",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
                         }
                         Text(
                             text = "Dosis: ${item.dosis}",
@@ -160,6 +172,16 @@ fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit, onEdit: (Long) -
                     }
                 }
             }
+
+            AlarmInfoDialog(
+                openDialog = openInfoDialog.value,
+                onDismissRequest = { openInfoDialog.value = false },
+                alarms = {item.alarms},
+                medicamento = item.medicamento
+            )
         }
     }
+
+
+
 }
