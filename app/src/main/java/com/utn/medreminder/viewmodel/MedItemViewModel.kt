@@ -1,11 +1,16 @@
 package com.utn.medreminder.viewmodel
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.utn.medreminder.api.RetrofitInstance
 import com.utn.medreminder.model.MedItem
+import com.utn.medreminder.scheduler.AlarmUtils
+import com.utn.medreminder.utils.MedAlarmWithItem
+import com.utn.medreminder.utils.PreferencesManager
 import kotlinx.coroutines.launch
 
 class MedItemViewModel:ViewModel() {
@@ -25,11 +30,21 @@ class MedItemViewModel:ViewModel() {
         }
     }
 
-    suspend fun addMedItem(medItem: MedItem) {
+    suspend fun addMedItem(medItem: MedItem, context: Context, preferencesManager:PreferencesManager) {
         //viewModelScope.launch {
             try {
                 val newItem = RetrofitInstance.api.createMedItem(medItem)
                 medItems.add(newItem) // Agregar el nuevo item a la lista
+                  // Guarda el MedItem individualmente
+                val medId = newItem.id!!.toInt()  // Convierte id a Int con aserción de no-null
+                AlarmUtils.setAlarmAfterDelayInSeconds(context,medId, 5)
+                preferencesManager.addMedicationWithItem( MedAlarmWithItem(
+                    idReqCodeAlarm = medId.toLong(),  // Ejemplo de identificador para el código de la alarma
+                    message = "Es hora de tomar --> ${newItem.medicamento}",  // Mensaje de la alarma
+                    idAlarmMed = newItem.alarms!!.sortedBy { it.id }.first().id, // Ordena por ID y toma el primero
+                    idMed = medId.toLong()  // Ejemplo de ID del medicamento
+                ))
+
                 fetchMedItems()
             } catch (e: Exception) {
                 e.printStackTrace()

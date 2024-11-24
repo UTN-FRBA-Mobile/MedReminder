@@ -15,6 +15,11 @@ class AlarmScheduler(private val context: Context) {
         val intent = Intent(context, MedReminderReceiver::class.java).apply {
             putExtra("reminder_id", id)
         }
+
+        intent.getIntArrayExtra("reminder_id")?.forEach { it ->
+            println("reminder_id--> Id Reminder ${it}")
+        }
+
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             id,

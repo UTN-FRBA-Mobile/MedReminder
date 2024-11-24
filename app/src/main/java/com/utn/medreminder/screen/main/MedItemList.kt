@@ -22,7 +22,9 @@ import androidx.compose.ui.text.withStyle
 
 import com.utn.medreminder.R
 import com.utn.medreminder.model.MedItem
+import com.utn.medreminder.scheduler.AlarmScheduler
 import com.utn.medreminder.scheduler.AlarmUtils
+import com.utn.medreminder.utils.PreferencesManager
 
 @Composable
 
@@ -33,6 +35,7 @@ fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit, onEdit: (Long) -
     val name = remember { mutableStateOf<String>("") }
 
     val context = LocalContext.current // Si estás en una Activity o usa requireContext() en un Fragment
+    val preferencesManager = PreferencesManager(context)
     val alarmId = 1 // Identificador único para la alarma
     val delayInSeconds = 5 // Retraso en segundos
 
@@ -47,6 +50,8 @@ fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit, onEdit: (Long) -
                     onConfirmation = {
                         openAlertDeleteDialog.value=false
                         onDelete(id.value)
+                        AlarmScheduler(context).cancelAlarm(id.value.toInt())
+                        preferencesManager.deleteMedicationWithItem(id.value);
                         println("Here--> Se confirmo, implementar lo que hay q hacer")
                     },
                     dialogTitle = "Eliminar Medicamento",

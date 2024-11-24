@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.utn.medreminder.model.MedItem
+import com.utn.medreminder.utils.PreferencesManager
 import com.utn.medreminder.utils.ScreenConst
 import com.utn.medreminder.viewmodel.MedItemViewModel
 import kotlinx.coroutines.launch
@@ -39,6 +40,7 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
     var frequencyInHours by remember { mutableStateOf(0) } // Estado para la frecuencia en horas
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val preferencesManager = PreferencesManager(context)  // Inicializa PreferencesManager con el contexto
     val frequencyOptions = listOf("Cada 4 horas", "Cada 6 horas", "Cada 8 horas","Cada 12 horas","Cada 24 horas")
     val frequencyMap = mapOf(
         "Cada 4 horas" to 4,
@@ -234,7 +236,7 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
                                 )
 
                                 // Llama a la API para guardar el medicamento
-                                viewModel.addMedItem(medItem)
+                                viewModel.addMedItem(medItem,context,preferencesManager)
 
                                 // Navega de regreso a la lista
                                 navController.navigate(ScreenConst.ListScreenName)
