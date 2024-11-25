@@ -18,6 +18,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -46,7 +47,7 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val preferencesManager = PreferencesManager(context)  // Inicializa PreferencesManager con el contexto
-    val frequencyOptions = listOf("Cada 5 segundos","Cada 10 segundos","Cada 4 horas", "Cada 6 horas", "Cada 8 horas","Cada 12 horas","Cada 24 horas")
+    val frequencyOptions = listOf("Cada 10 segundos","Cada 25 segundos","Cada 4 horas", "Cada 6 horas", "Cada 8 horas","Cada 12 horas","Cada 24 horas")
     val frequencyMap = mapOf(
         "Cada 4 horas" to 14400, // 4 * 60 * 60
         "Cada 6 horas" to 21600, // 6 * 60 * 60
@@ -54,7 +55,7 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
         "Cada 12 horas" to 43200, // 12 * 60 * 60
         "Cada 24 horas" to 86400, // 24 * 60 * 60
         "Cada 10 segundos" to 10 ,// 10 segundos
-        "Cada 5 segundos" to 5 // 10 segundos
+        "Cada 25 segundos" to 25 // 25 segundos
 
     )
 
@@ -122,12 +123,25 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
         timePickerDialog.show()
     }
 
+//*
+
+
+//
+
 
 
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Agregar Medicamento") }
+            TopAppBar(title = { Text(
+                text = "Programar Medicamento",
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold, // Hacemos el texto un poco más pesado
+                    color = MaterialTheme.colorScheme.primary, // Color que se ajusta al tema
+                ),
+                modifier = Modifier
+                    .padding(top = 32.dp, bottom = 8.dp, start = 16.dp, end = 16.dp), // Espaciado alrededor
+            )}
             ,            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
 

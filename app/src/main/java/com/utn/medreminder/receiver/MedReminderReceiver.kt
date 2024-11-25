@@ -46,10 +46,11 @@ class MedReminderReceiver  : BroadcastReceiver() {
                             medAlarmWithItem.idAlarmMed = nextAlarm.id!!
                             medAlarmWithItem.alarmDateTime = nextAlarm.alarmDateTime!!
                             preferencesManager.updateMedicationWithItem(medAlarmWithItem);
-                            val alarmDateTime = medAlarmWithItem.alarmDateTime
-                            val secondsUntilAlarm = ConvDateUtils.calculateSecondsUntil(alarmDateTime!!)
-                            println("segundos:${secondsUntilAlarm}")
-                            AlarmUtils.setAlarmAfterDelayInSeconds(context,reminderId, secondsUntilAlarm.toInt())
+                             val alarmDateTime = medAlarmWithItem.alarmDateTime
+                             val secondsUntilAlarm = ConvDateUtils.calculateSecondsUntil(alarmDateTime!!)
+//                            println("segundos:${secondsUntilAlarm}")
+                            AlarmUtils.setAlarmAfterDelayInSeconds(context,reminderId,secondsUntilAlarm.toInt())
+                            //AlarmUtils.setAlarmAfterDelayByDateTimeAlarm(context,reminderId, alarmDateTime!!)
 
                         } else {  // Si no hay siguiente alarma se cancela y se elimina del sharedPref
                             val alarmScheduler = AlarmScheduler(context)

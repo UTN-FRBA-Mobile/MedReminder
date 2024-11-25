@@ -49,6 +49,7 @@ class MedItemViewModel:ViewModel() {
                 preferencesManager.addMedicationWithItem( medAlarm)
                 val secondsDelay = ConvDateUtils.calculateSecondsUntil(medAlarm.alarmDateTime!!);
                 AlarmUtils.setAlarmAfterDelayInSeconds(context,medId, secondsDelay.toInt())
+                //AlarmUtils.setAlarmAfterDelayByDateTimeAlarm(context,medId, medAlarm.alarmDateTime!!)
                 fetchMedItems()
             } catch (e: Exception) {
                 e.printStackTrace()
