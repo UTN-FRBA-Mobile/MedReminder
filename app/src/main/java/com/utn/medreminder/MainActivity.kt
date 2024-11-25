@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.utn.medreminder.screen.add.AddMedScreen
 import com.utn.medreminder.screen.edit.EditMedScreen
 import com.utn.medreminder.screen.main.MainScreen
+import com.utn.medreminder.screen.LoginScreen
 import com.utn.medreminder.ui.theme.MyApplicationTheme
 import com.utn.medreminder.utils.ScreenConst
 import android.Manifest
@@ -106,21 +107,24 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MedRemindApp(modifier: Modifier = Modifier, viewModel: MedItemViewModel) {
-    val navController = rememberNavController();
-//    MedItemList(list)
+    val navController = rememberNavController()
 
-
-    NavHost(navController = navController, startDestination = ScreenConst.ListScreenName ){
-        composable(route = ScreenConst.ListScreenName) {
-            MainScreen(navController = navController, viewModel = viewModel);
+    NavHost(navController = navController, startDestination = "login") {
+        composable(route = "login") {
+            LoginScreen(navController = navController)
         }
-        composable(route =ScreenConst.AddItemScreenName){
+        composable(route = ScreenConst.ListScreenName) {
+            MainScreen(navController = navController, viewModel = viewModel)
+        }
+        composable(route = ScreenConst.AddItemScreenName) {
             AddMedScreen(navController = navController)
         }
-        composable(route =ScreenConst.EditItemScreenName) { backStackEntry ->
+        composable(route = ScreenConst.EditItemScreenName) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: 0
-            EditMedScreen(navController=navController, medItemId=id)
+            EditMedScreen(navController = navController, medItemId = id)
         }
-
     }
 }
+
+
+
