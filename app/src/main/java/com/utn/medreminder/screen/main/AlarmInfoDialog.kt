@@ -102,20 +102,26 @@ fun AlarmCard(alarm: MedAlarm) {
                 Icon(
                     painter = if (MedAlarmStatus.fromChar(alarm.status) == MedAlarmStatus.FINISHED) {
                         painterResource(id = com.utn.medreminder.R.drawable.finish_icon)
-                    } else {
+                    } else if (MedAlarmStatus.fromChar(alarm.status) == MedAlarmStatus.WAITING) {
                         painterResource(id = com.utn.medreminder.R.drawable.waiting_icon) // Replace with a different icon if needed
+                    }else{
+                        painterResource(id = com.utn.medreminder.R.drawable.ready_icon) // Replace with a different icon if needed
                     },
                     contentDescription = "Icono de alarma",
                     modifier = Modifier.size(24.dp),
                     tint = if (MedAlarmStatus.fromChar(alarm.status) == MedAlarmStatus.FINISHED){
                         MaterialTheme.colorScheme.primary
-                    } else{
+                    }else if (MedAlarmStatus.fromChar(alarm.status) == MedAlarmStatus.WAITING) {
+                        MaterialTheme.colorScheme.secondary
+                    }
+                    else{
                         MaterialTheme.colorScheme.secondary
                     }
                 )
 
                 Text(
-                    text = "${if (MedAlarmStatus.fromChar(alarm.status) == MedAlarmStatus.FINISHED) "Finalizado" else "En Espera"}",
+                    text = "${if (MedAlarmStatus.fromChar(alarm.status) == MedAlarmStatus.FINISHED) "Finalizado" 
+                    else if(MedAlarmStatus.fromChar(alarm.status) == MedAlarmStatus.WAITING) "En Espera" else "Próximo" }",
                     style = MaterialTheme.typography.bodyMedium
                 )
 

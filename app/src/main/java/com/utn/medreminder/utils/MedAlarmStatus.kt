@@ -2,7 +2,8 @@ package com.utn.medreminder.utils
 
 enum class MedAlarmStatus(val char: Char) {
     WAITING('W'),
-    FINISHED('F');
+    FINISHED('F'),
+    READY('R');
 
     companion object {
         // Function to convert nullable Char to MedAlarmStatus enum

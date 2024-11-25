@@ -16,6 +16,10 @@ interface AlarmMedApiService {
 
     @PUT("api/alarm-med-items/toFinishStatus/{id}")
     suspend fun finishAlarmStatus(@Path("id") alarmId: Long): Response<Unit>
+
+    @PUT("api/alarm-med-items/toReadyStatus/{id}")
+    suspend fun readyAlarmStatus(@Path("id") alarmId: Long): Response<Unit>
+
 }
 
 object RetrofitInstanceAlarmMed {

@@ -39,6 +39,9 @@ class MedReminderReceiver  : BroadcastReceiver() {
                         val nextAlarm =
                             RetrofitInstanceAlarmMed.api.getNextAlarmByMedId(medAlarmWithItem.idMed)
                         if (nextAlarm != null) {  // SI hay siguiente alarma, actualizo el sharedPref y mando a correr con el mismo id
+                            RetrofitInstanceAlarmMed.api.readyAlarmStatus(nextAlarm.id!!)
+                            val intent = Intent("com.utn.medreminder.UPDATE_MED_ITEMS")
+                            context.sendBroadcast(intent)
                             medAlarmWithItem.idAlarmMed = nextAlarm.id!!
                             preferencesManager.updateMedicationWithItem(medAlarmWithItem);
                             AlarmUtils.setAlarmAfterDelayInSeconds(context,reminderId, 5)
