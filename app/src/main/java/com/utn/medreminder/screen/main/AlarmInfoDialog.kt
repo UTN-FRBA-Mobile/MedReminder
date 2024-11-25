@@ -78,7 +78,12 @@ fun AlarmCard(alarm: MedAlarm) {
     val dayOfMonth = dateTime?.dayOfMonth ?: "??"
     val month = dateTime?.month?.getDisplayName(java.time.format.TextStyle.SHORT, Locale("es")) ?: "Mes"
     val dayOfWeek = dateTime?.dayOfWeek?.getDisplayName(java.time.format.TextStyle.FULL, Locale("es")) ?: "Día"
-    val hourAndMinute = "%02d:%02d".format(alarm.alarmHour ?: 0, alarm.alarmMinute ?: 0)
+    //val hourAndMinute = "%02d:%02d".format(alarm.alarmHour ?: 0, alarm.alarmMinute ?: 0)
+
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+    val outputFormatter = DateTimeFormatter.ofPattern("HH:mm:ss") // Formato deseado
+    val alarmTime = LocalDateTime.parse(alarm.alarmDateTime, inputFormatter)
+    val hourAndMinute = alarmTime.format(outputFormatter) // Convertir a HH:mm:ss
 
     Card(
         modifier = Modifier

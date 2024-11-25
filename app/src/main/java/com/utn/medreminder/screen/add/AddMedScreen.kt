@@ -41,17 +41,21 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
     var startTime by remember { mutableStateOf("") }
     var selectedDate by remember { mutableStateOf("") }
     var selectedFrequency by remember { mutableStateOf("") } // Estado para la opción seleccionada
-    var frequencyInHours by remember { mutableStateOf(0) } // Estado para la frecuencia en horas
+    //var frequencyInHours by remember { mutableStateOf(0) } // Estado para la frecuencia en horas
+    var frequencyInSeconds by remember { mutableStateOf(0) } // Frecuencia en segundos
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val preferencesManager = PreferencesManager(context)  // Inicializa PreferencesManager con el contexto
-    val frequencyOptions = listOf("Cada 4 horas", "Cada 6 horas", "Cada 8 horas","Cada 12 horas","Cada 24 horas")
+    val frequencyOptions = listOf("Cada 5 segundos","Cada 10 segundos","Cada 4 horas", "Cada 6 horas", "Cada 8 horas","Cada 12 horas","Cada 24 horas")
     val frequencyMap = mapOf(
-        "Cada 4 horas" to 4,
-        "Cada 6 horas" to 6,
-        "Cada 8 horas" to 8,
-        "Cada 12 horas" to 12,
-        "Cada 24 horas" to 24
+        "Cada 4 horas" to 14400, // 4 * 60 * 60
+        "Cada 6 horas" to 21600, // 6 * 60 * 60
+        "Cada 8 horas" to 28800, // 8 * 60 * 60
+        "Cada 12 horas" to 43200, // 12 * 60 * 60
+        "Cada 24 horas" to 86400, // 24 * 60 * 60
+        "Cada 10 segundos" to 10 ,// 10 segundos
+        "Cada 5 segundos" to 5 // 10 segundos
+
     )
 
     var expandedMedication by remember { mutableStateOf(false) }
@@ -220,7 +224,7 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
                             onClick = {
                                 selectedFrequency = option
                                 frequency = option // Actualiza la frecuencia seleccionada
-                                frequencyInHours = frequencyMap[option] ?: 0 // Actualiza la frecuencia en horas
+                                frequencyInSeconds = frequencyMap[option] ?: 0 // Actualiza la frecuencia en horas
                                 expanded = false // Cierra el menú al seleccionar
                             }
                         )
@@ -276,7 +280,7 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
                                     dosis = dosage,
                                     frecuencia = frequency,
                                     horayFechaDeInicio = horaYFechaDeInicio,
-                                    frecuenciaEnHoras = frequencyInHours,
+                                    frecuenciaEnSegundos = frequencyInSeconds,
                                     cantidad = dosage.toInt()
                                 )
 

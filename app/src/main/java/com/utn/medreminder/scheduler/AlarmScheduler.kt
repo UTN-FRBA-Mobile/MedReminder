@@ -16,9 +16,20 @@ class AlarmScheduler(private val context: Context) {
             putExtra("reminder_id", id)
         }
 
-        intent.getIntArrayExtra("reminder_id")?.forEach { it ->
-            println("reminder_id--> Id Reminder ${it}")
-        }
+//        val reminderIds = intent.getIntArrayExtra("reminder_id")
+//        if (reminderIds != null) {
+//            reminderIds.forEach { id ->
+//                println("reminder_id --> Id Reminder $id")
+//            }
+//        } else {
+//            // Caso: Es un único entero
+//            val singleReminderId = intent.getIntExtra("reminder_id", -1)
+//            if (singleReminderId != -1) {
+//                println("reminder_id --> Id Reminder $singleReminderId")
+//            } else {
+//                println("reminder_id --> No se encontró ningún ID de recordatorio")
+//            }
+//        }
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,

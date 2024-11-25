@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.utn.medreminder.api.RetrofitInstance
 import com.utn.medreminder.model.MedItem
 import com.utn.medreminder.scheduler.AlarmUtils
+import com.utn.medreminder.utils.ConvDateUtils
 import com.utn.medreminder.utils.MedAlarmWithItem
 import com.utn.medreminder.utils.PreferencesManager
 import kotlinx.coroutines.launch
@@ -37,14 +38,17 @@ class MedItemViewModel:ViewModel() {
                 medItems.add(newItem) // Agregar el nuevo item a la lista
                   // Guarda el MedItem individualmente
                 val medId = newItem.id!!.toInt()  // Convierte id a Int con aserción de no-null
-                AlarmUtils.setAlarmAfterDelayInSeconds(context,medId, 5)
-                preferencesManager.addMedicationWithItem( MedAlarmWithItem(
+
+                val medAlarm=MedAlarmWithItem(
                     idReqCodeAlarm = medId.toLong(),  // Ejemplo de identificador para el código de la alarma
                     message = "Es hora de tomar --> ${newItem.medicamento}",  // Mensaje de la alarma
                     idAlarmMed = newItem.alarms!!.sortedBy { it.id }.first().id, // Ordena por ID y toma el primero
-                    idMed = medId.toLong()  // Ejemplo de ID del medicamento
-                ))
-
+                    idMed = medId.toLong(),  // Ejemplo de ID del medicamento
+                    alarmDateTime = newItem.alarms!!.sortedBy { it.id }.first().alarmDateTime,
+                )
+                preferencesManager.addMedicationWithItem( medAlarm)
+                val secondsDelay = ConvDateUtils.calculateSecondsUntil(medAlarm.alarmDateTime!!);
+                AlarmUtils.setAlarmAfterDelayInSeconds(context,medId, secondsDelay.toInt())
                 fetchMedItems()
             } catch (e: Exception) {
                 e.printStackTrace()

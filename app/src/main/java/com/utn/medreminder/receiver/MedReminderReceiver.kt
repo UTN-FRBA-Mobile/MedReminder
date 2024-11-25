@@ -8,6 +8,7 @@ import com.utn.medreminder.api.RetrofitInstanceAlarmMed
 import com.utn.medreminder.helper.NotificationHelper
 import com.utn.medreminder.scheduler.AlarmScheduler
 import com.utn.medreminder.scheduler.AlarmUtils
+import com.utn.medreminder.utils.ConvDateUtils
 import com.utn.medreminder.utils.PreferencesManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,8 +44,12 @@ class MedReminderReceiver  : BroadcastReceiver() {
                             val intent = Intent("com.utn.medreminder.UPDATE_MED_ITEMS")
                             context.sendBroadcast(intent)
                             medAlarmWithItem.idAlarmMed = nextAlarm.id!!
+                            medAlarmWithItem.alarmDateTime = nextAlarm.alarmDateTime!!
                             preferencesManager.updateMedicationWithItem(medAlarmWithItem);
-                            AlarmUtils.setAlarmAfterDelayInSeconds(context,reminderId, 5)
+                            val alarmDateTime = medAlarmWithItem.alarmDateTime
+                            val secondsUntilAlarm = ConvDateUtils.calculateSecondsUntil(alarmDateTime!!)
+                            println("segundos:${secondsUntilAlarm}")
+                            AlarmUtils.setAlarmAfterDelayInSeconds(context,reminderId, secondsUntilAlarm.toInt())
 
                         } else {  // Si no hay siguiente alarma se cancela y se elimina del sharedPref
                             val alarmScheduler = AlarmScheduler(context)
