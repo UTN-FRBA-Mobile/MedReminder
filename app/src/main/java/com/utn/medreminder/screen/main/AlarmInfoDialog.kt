@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -100,22 +101,18 @@ fun AlarmCard(alarm: MedAlarm) {
 //                )
 
                 Icon(
-                    painter = if (MedAlarmStatus.fromChar(alarm.status) == MedAlarmStatus.FINISHED) {
-                        painterResource(id = com.utn.medreminder.R.drawable.finish_icon)
-                    } else if (MedAlarmStatus.fromChar(alarm.status) == MedAlarmStatus.WAITING) {
-                        painterResource(id = com.utn.medreminder.R.drawable.waiting_icon) // Replace with a different icon if needed
-                    }else{
-                        painterResource(id = com.utn.medreminder.R.drawable.ready_icon) // Replace with a different icon if needed
+                    painter = when (MedAlarmStatus.fromChar(alarm.status)) {
+                        MedAlarmStatus.FINISHED -> painterResource(id = com.utn.medreminder.R.drawable.finish_icon)
+                        MedAlarmStatus.WAITING -> painterResource(id = com.utn.medreminder.R.drawable.waiting_icon)
+                        else -> painterResource(id = com.utn.medreminder.R.drawable.ready_icon)
                     },
                     contentDescription = "Icono de alarma",
                     modifier = Modifier.size(24.dp),
-                    tint = if (MedAlarmStatus.fromChar(alarm.status) == MedAlarmStatus.FINISHED){
-                        MaterialTheme.colorScheme.primary
-                    }else if (MedAlarmStatus.fromChar(alarm.status) == MedAlarmStatus.WAITING) {
-                        MaterialTheme.colorScheme.secondary
-                    }
-                    else{
-                        MaterialTheme.colorScheme.secondary
+                    tint = when (MedAlarmStatus.fromChar(alarm.status)) {
+                        MedAlarmStatus.FINISHED -> Color(0xFF4CAF50) // Verde
+                        MedAlarmStatus.WAITING -> Color(0xFF9E9E9E) // Gris
+                        MedAlarmStatus.READY -> Color(0xFFFF9800) // Naranja
+                        else -> Color(0xFFFF0000) // Rojo
                     }
                 )
 

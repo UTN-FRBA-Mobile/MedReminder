@@ -4,6 +4,7 @@ import android.R
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -12,8 +13,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -34,7 +38,7 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
     var medicationName by remember { mutableStateOf("") }
     var dosage by remember { mutableStateOf("") }
     var frequency by remember { mutableStateOf("") }
-    var startTime by remember { mutableStateOf(LocalTime.now().toString()) }
+    var startTime by remember { mutableStateOf("") }
     var selectedDate by remember { mutableStateOf("") }
     var selectedFrequency by remember { mutableStateOf("") } // Estado para la opción seleccionada
     var frequencyInHours by remember { mutableStateOf(0) } // Estado para la frecuencia en horas
@@ -50,6 +54,7 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
         "Cada 24 horas" to 24
     )
 
+    var expandedMedication by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) } // Estado para el menú desplegable
     var horaYFechaDeInicio by remember { mutableStateOf("") } // Variable para almacenar la fecha y hora en formato deseado
 
@@ -62,6 +67,9 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
     val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
     val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
     val currentMinute = calendar.get(Calendar.MINUTE)
+
+    val medicationList = listOf("Omeprazol 500mg", "Paracetamol 500mg", "Ibuprofeno 200mg", "Amoxicilina 500mg", "Aspirina 100mg")
+
 
     fun updateFechaYHora() {
         if (selectedDate.isNotBlank() && startTime.isNotBlank()) {
@@ -115,9 +123,20 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Agregar Medicamento") })
+            TopAppBar(title = { Text("Agregar Medicamento") }
+            ,            colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+            )
+
         }
     ) { innerPadding ->
+
+        Image(
+            painter = painterResource(id = com.utn.medreminder.R.drawable.background_gen), // Asegúrate de que el nombre del archivo sea correcto
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop // Esto hace que la imagen cubra toda la pantalla
+        )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -126,13 +145,39 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            OutlinedTextField(
-                value = medicationName,
-                onValueChange = { medicationName = it },
-                label = { Text("Nombre del Medicamento") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
+            ExposedDropdownMenuBox(
+                expanded = expandedMedication,
+                onExpandedChange = { expandedMedication = !expandedMedication }
+            ) {
+                OutlinedTextField(
+                    value = medicationName.ifEmpty { "Seleccionar Medicamento" },
+                    onValueChange = {},
+                    label = { Text("Medicamento") },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedMedication)
+                    },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth(),
+                    readOnly = true
+                )
+
+                ExposedDropdownMenu(
+                    expanded = expandedMedication,
+                    onDismissRequest = { expandedMedication = false }
+                ) {
+                    medicationList.forEach { medication ->
+                        DropdownMenuItem(
+                            text = { Text(medication) },
+                            onClick = {
+                                medicationName = medication
+                                expandedMedication = false
+                            }
+                        )
+                    }
+                }
+            }
+
             OutlinedTextField(
                 value = dosage,
                 onValueChange = {

@@ -8,5 +8,13 @@ data class MedItem(
     val horayFechaDeInicio: String ="",
     val frecuenciaEnHoras: Int = 5,
     val cantidad: Int = 4,
-    val alarms: List<MedAlarm>? = null
+    val alarms: List<MedAlarm>? = null,
+    val statusCount: StatusCount? = null
+
+)
+
+data class StatusCount(
+    val waitingCount: Int = 0,
+    val finishedCount: Int = 0,
+    val readyCount: Int = 0
 )

@@ -6,11 +6,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -33,12 +35,8 @@ fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit, onEdit: (Long) -
     val openAlertDeleteDialog = remember { mutableStateOf(false) }
     val id = remember { mutableStateOf<Long>(0) }
     val name = remember { mutableStateOf<String>("") }
-
     val context = LocalContext.current // Si estás en una Activity o usa requireContext() en un Fragment
     val preferencesManager = PreferencesManager(context)
-    val alarmId = 1 // Identificador único para la alarma
-    val delayInSeconds = 5 // Retraso en segundos
-
     val openInfoDialog = remember { mutableStateOf(false) }
 
     when {
@@ -69,6 +67,19 @@ fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit, onEdit: (Long) -
                 )
         }
     }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+
+        Text(
+            text = "Medicamentos Programados",
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.Bold, // Hacemos el texto un poco más pesado
+                color = MaterialTheme.colorScheme.primary, // Color que se ajusta al tema
+            ),
+            modifier = Modifier
+                .padding(top = 32.dp, bottom = 8.dp, start = 16.dp, end = 16.dp), // Espaciado alrededor
+        )
+
 
     LazyColumn(
         modifier = Modifier
@@ -108,14 +119,7 @@ fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit, onEdit: (Long) -
                                 color = MaterialTheme.colorScheme.onSurface
                             )
 
-                            IconButton(onClick = { openInfoDialog.value = true }) {
-                                Icon(
-                                    //  painter = painterResource(id = R.drawable.alarm_icon), // Reemplaza con el recurso de tu ícono de alarma
-                                    imageVector = Icons.Default.Notifications,
-                                    contentDescription = "Ver alarma",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
+
                         }
                         Text(
                             text = "Dosis: ${item.dosis}",
@@ -131,20 +135,35 @@ fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit, onEdit: (Long) -
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    Text(
+                        text = "Dosis Tomadas: ${item.statusCount!!.finishedCount }",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Text(
+                        text = "Dosis Faltantes: ${item.statusCount!!.readyCount +item.statusCount!!.waitingCount }",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
 
-                        Button(onClick = {
-                            item?.let {
-                                // Cuando se presiona el botón, la alarma se activa
-                                AlarmUtils.setAlarmAfterDelayInSeconds(context, alarmId, delayInSeconds)
-                            }
-                        }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)) {
+
+
+                        Button(onClick = { openInfoDialog.value = true }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)) {
+                            Icon(
+                                //  painter = painterResource(id = R.drawable.alarm_icon), // Reemplaza con el recurso de tu ícono de alarma
+                                imageVector = Icons.Default.Notifications,
+                                contentDescription = "Ver alarmas",
+                                tint = Color(0xFFFFFFFF)
+                            )
+
                             Text(
-                                text = "Activar Alarma",
+                                text = "Ver Alarmas",
                                 color = MaterialTheme.colorScheme.onPrimary,
                                 style = MaterialTheme.typography.labelLarge
                             )
@@ -164,16 +183,15 @@ fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit, onEdit: (Long) -
                             )
                         }
 
-                        Button(
-                            onClick = { item.id?.let { onEdit(it) } },
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                        ) {
-                            Text(
-                                text = "Editar",
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                style = MaterialTheme.typography.labelLarge
+                        IconButton(onClick = { openInfoDialog.value = true }) {
+                            Icon(
+                                imageVector = Icons.Outlined.Info,
+                                contentDescription = "Ver alarma",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(48.dp)  // Ajusta el tamaño según lo necesites
                             )
                         }
+
                     }
                 }
             }
@@ -186,7 +204,7 @@ fun MedItemList(items: List<MedItem>, onDelete: (Long) -> Unit, onEdit: (Long) -
             )
         }
     }
-
+}
 
 
 }

@@ -27,6 +27,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.utn.medreminder.receiver.MedReminderReceiver
 import com.utn.medreminder.viewmodel.MedItemViewModel
@@ -40,8 +44,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
             MyApplicationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+
+                        Image(
+                            painter = painterResource(id = R.drawable.background_gen), // Asegúrate de que el nombre del archivo sea correcto
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop // Esto hace que la imagen cubra toda la pantalla
+                        )
                     MedRemindApp(
                         modifier = Modifier.padding(innerPadding),
                         viewModel = medItemViewModel
@@ -96,6 +108,8 @@ class MainActivity : ComponentActivity() {
 fun MedRemindApp(modifier: Modifier = Modifier, viewModel: MedItemViewModel) {
     val navController = rememberNavController();
 //    MedItemList(list)
+
+
     NavHost(navController = navController, startDestination = ScreenConst.ListScreenName ){
         composable(route = ScreenConst.ListScreenName) {
             MainScreen(navController = navController, viewModel = viewModel);
@@ -107,6 +121,6 @@ fun MedRemindApp(modifier: Modifier = Modifier, viewModel: MedItemViewModel) {
             val id = backStackEntry.arguments?.getString("id")?.toLongOrNull() ?: 0
             EditMedScreen(navController=navController, medItemId=id)
         }
-    }
 
+    }
 }
