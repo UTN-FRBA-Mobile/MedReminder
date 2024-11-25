@@ -9,6 +9,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +20,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -27,7 +30,9 @@ import com.utn.medreminder.model.MedItem
 import com.utn.medreminder.utils.PreferencesManager
 import com.utn.medreminder.utils.ScreenConst
 import com.utn.medreminder.viewmodel.MedItemViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.util.Calendar
@@ -62,6 +67,9 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
     var expandedMedication by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) } // Estado para el menú desplegable
     var horaYFechaDeInicio by remember { mutableStateOf("") } // Variable para almacenar la fecha y hora en formato deseado
+
+    val showErrorDialog = remember { mutableStateOf(false) }
+    val errorMessage = remember { mutableStateOf<AnnotatedString>(AnnotatedString("")) }
 
     // Función para abrir el selector de fecha
 
@@ -286,37 +294,45 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
                             Toast.LENGTH_SHORT
                         ).show()
                     } else {
-                        scope.launch {
-                            try {
-                                // Crea el objeto MedItem
-                                val medItem = MedItem(
-                                    medicamento = medicationName,
-                                    dosis = dosage,
-                                    frecuencia = frequency,
-                                    horayFechaDeInicio = horaYFechaDeInicio,
-                                    frecuenciaEnSegundos = frequencyInSeconds,
-                                    cantidad = dosage.toInt()
-                                )
 
-                                // Llama a la API para guardar el medicamento
-                                viewModel.addMedItem(medItem,context,preferencesManager)
+                        if (!isDateTimeValid(horaYFechaDeInicio)) {
+                            errorMessage.value = AnnotatedString("La fecha y hora seleccionadas deben ser posteriores a la fecha y hora actual.")
+                            showErrorDialog.value = true
+                        } else {
+                            scope.launch {
+                                try {
+                                    // Crea el objeto MedItem
+                                    val medItem = MedItem(
+                                        medicamento = medicationName,
+                                        dosis = dosage,
+                                        frecuencia = frequency,
+                                        horayFechaDeInicio = horaYFechaDeInicio,
+                                        frecuenciaEnSegundos = frequencyInSeconds,
+                                        cantidad = dosage.toInt()
+                                    )
 
-                                // Navega de regreso a la lista
-                                navController.navigate(ScreenConst.ListScreenName)
+                                    // Llama a la API para guardar el medicamento
+                                    withContext(Dispatchers.IO) {
+                                        viewModel.addMedItem(medItem, context, preferencesManager)
+                                    }
 
-                                // Muestra un mensaje de éxito
-                                Toast.makeText(
-                                    context,
-                                    "Medicamento guardado exitosamente",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } catch (e: Exception) {
-                                // Maneja el error y muestra un mensaje
-                                Toast.makeText(
-                                    context,
-                                    "Error: ${e.message}",
-                                    Toast.LENGTH_LONG
-                                ).show()
+
+                                    withContext(Dispatchers.Main) {
+                                        Toast.makeText(
+                                            context,
+                                            "Medicamento guardado exitosamente",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+
+                                        // Navega de regreso a la lista solo si se agregó correctamente
+                                        navController.navigate(ScreenConst.ListScreenName)
+                                    }
+
+                                    // Muestra un mensaje de éxito
+                                } catch (e: Exception) {
+                                    errorMessage.value = AnnotatedString("${e.message}")
+                                    showErrorDialog.value = true
+                                }
                             }
                         }
                     }
@@ -332,9 +348,29 @@ fun AddMedScreen(navController: NavController, viewModel: MedItemViewModel = vie
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("<-- Volver -->")
+                Text(" Volver ")
             }
         }
+
+        if (showErrorDialog.value) {
+            AlertErrorDialog(
+                onDismissRequest = { showErrorDialog.value = false },
+                dialogTitle = "Error",
+                dialogText = errorMessage.value,
+                icon = Icons.Default.Warning // Usa el icono que prefieras
+            )
+        }
+    }
+}
+
+fun isDateTimeValid(horaYFechaDeInicio: String): Boolean {
+    val currentDateTime = Calendar.getInstance().time
+    val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+    return try {
+        val selectedDateTime = sdf.parse(horaYFechaDeInicio)
+        selectedDateTime?.after(currentDateTime) == true
+    } catch (e: Exception) {
+        false
     }
 }
 

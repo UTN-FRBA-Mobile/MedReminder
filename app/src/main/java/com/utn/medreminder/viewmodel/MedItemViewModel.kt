@@ -14,6 +14,8 @@ import com.utn.medreminder.utils.ConvDateUtils
 import com.utn.medreminder.utils.MedAlarmWithItem
 import com.utn.medreminder.utils.PreferencesManager
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 
 class MedItemViewModel:ViewModel() {
 
@@ -54,8 +56,17 @@ class MedItemViewModel:ViewModel() {
                 RetrofitInstanceAlarmMed.api.readyAlarmStatus(nextAlarm.id!!.toLong())
                 //AlarmUtils.setAlarmAfterDelayByDateTimeAlarm(context,medId, medAlarm.alarmDateTime!!)
                 fetchMedItems()
+            } catch (e: HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                val errorMessage = errorBody ?: "Error desconocido del servidor"
+                e.printStackTrace()
+                throw Exception("$errorMessage")
+            }catch (e: IOException) {
+                e.printStackTrace()
+                throw Exception("Error de red o de conexión: ${e.message}")
             } catch (e: Exception) {
                 e.printStackTrace()
+                throw e
             }
         //}
     }
